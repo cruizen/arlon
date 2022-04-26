@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"context"
+	"os"
+
 	arlonv1 "arlon.io/arlon/api/v1"
 	"arlon.io/arlon/controllers"
 	"arlon.io/arlon/pkg/argocd"
@@ -8,7 +11,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
@@ -26,8 +28,19 @@ func init() {
 	//+kubebuilder:scaffold:scheme
 }
 
-func StartController(argocdConfigPath string, metricsAddr string, probeAddr string, enableLeaderElection bool) {
-	argocdClient := argocd.NewArgocdClientOrDie(argocdConfigPath)
+//func StartController(argocdConfigPath string, metricsAddr string, probeAddr string, enableLeaderElection bool) {
+func StartController(ctx context.Context,
+	argo argocd.ArgoCDImpl,
+	metricsAddr string, probeAddr string, enableLeaderElection bool) {
+
+	//argocdClient := argocd.NewArgocdClientFromConfigOrDie(argocdConfigPath)
+	//argo := argocd.NewArgoCDImpl(argocdUsername, argocdPassword, argocdServerUri)
+	argocdClient, err := argocd.NewArgocdClientOrDie(ctx, argo)
+	if err != nil {
+		setupLog.Error(err, "unable to start ArgoCD Client from controller")
+		os.Exit(1)
+	}
+
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
 		MetricsBindAddress:     metricsAddr,

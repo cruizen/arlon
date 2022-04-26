@@ -1,16 +1,17 @@
 package list_clusters
 
 import (
-	"arlon.io/arlon/pkg/argocd"
 	"context"
 	"fmt"
+	"os"
+	"text/tabwriter"
+
+	"arlon.io/arlon/pkg/argocd"
 	clusterpkg "github.com/argoproj/argo-cd/v2/pkg/apiclient/cluster"
 	argoappv1 "github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	"github.com/argoproj/argo-cd/v2/util/errors"
 	"github.com/argoproj/argo-cd/v2/util/io"
 	"github.com/spf13/cobra"
-	"os"
-	"text/tabwriter"
 )
 
 func NewCommand() *cobra.Command {
@@ -27,7 +28,7 @@ func NewCommand() *cobra.Command {
 }
 
 func listClusters() {
-	conn, clusterIf := argocd.NewArgocdClientOrDie("").NewClusterClientOrDie()
+	conn, clusterIf := argocd.NewArgocdClientFromConfigOrDie("").NewClusterClientOrDie()
 	defer io.Close(conn)
 	clusters, err := clusterIf.List(context.Background(), &clusterpkg.ClusterQuery{})
 	errors.CheckError(err)

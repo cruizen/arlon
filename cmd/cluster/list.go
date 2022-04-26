@@ -1,17 +1,18 @@
 package cluster
 
 import (
-	"arlon.io/arlon/pkg/argocd"
-	"arlon.io/arlon/pkg/common"
 	"context"
 	"fmt"
+	"os"
+	"text/tabwriter"
+
+	"arlon.io/arlon/pkg/argocd"
+	"arlon.io/arlon/pkg/common"
 	apppkg "github.com/argoproj/argo-cd/v2/pkg/apiclient/application"
 	argoappv1 "github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	"github.com/argoproj/argo-cd/v2/util/errors"
 	"github.com/argoproj/argo-cd/v2/util/io"
 	"github.com/spf13/cobra"
-	"os"
-	"text/tabwriter"
 )
 
 func listClustersCommand() *cobra.Command {
@@ -28,7 +29,7 @@ func listClustersCommand() *cobra.Command {
 }
 
 func listClusters() {
-	conn, appIf := argocd.NewArgocdClientOrDie("").NewApplicationClientOrDie()
+	conn, appIf := argocd.NewArgocdClientFromConfigOrDie("").NewApplicationClientOrDie()
 	defer io.Close(conn)
 	apps, err := appIf.List(context.Background(),
 		&apppkg.ApplicationQuery{Selector: "managed-by=arlon,arlon-type=cluster"})

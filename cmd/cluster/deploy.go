@@ -1,10 +1,12 @@
 package cluster
 
 import (
-	"arlon.io/arlon/pkg/argocd"
-	"arlon.io/arlon/pkg/cluster"
 	_ "embed"
 	"fmt"
+	"os"
+
+	"arlon.io/arlon/pkg/argocd"
+	"arlon.io/arlon/pkg/cluster"
 	"github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	"github.com/argoproj/argo-cd/v2/util/cli"
 	"github.com/spf13/cobra"
@@ -12,7 +14,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	"os"
 )
 
 func deployClusterCommand() *cobra.Command {
@@ -31,7 +32,7 @@ func deployClusterCommand() *cobra.Command {
 		Short: "deploy new cluster",
 		Long:  "deploy new cluster",
 		RunE: func(c *cobra.Command, args []string) error {
-			conn, appIf := argocd.NewArgocdClientOrDie("").NewApplicationClientOrDie()
+			conn, appIf := argocd.NewArgocdClientFromConfigOrDie("").NewApplicationClientOrDie()
 			defer conn.Close()
 			config, err := clientConfig.ClientConfig()
 			if err != nil {

@@ -17,15 +17,21 @@ limitations under the License.
 package main
 
 import (
+	"context"
+	"flag"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"arlon.io/arlon/cmd/bundle"
 	"arlon.io/arlon/cmd/cluster"
 	"arlon.io/arlon/cmd/clusterspec"
 	"arlon.io/arlon/cmd/controller"
 	"arlon.io/arlon/cmd/list_clusters"
 	"arlon.io/arlon/cmd/profile"
-	"flag"
 	"github.com/spf13/cobra"
-	"os"
+
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -36,6 +42,10 @@ import (
 )
 
 func main() {
+
+	ctx, cancel := Context()
+	defer cancel()
+
 	command := &cobra.Command{
 		Use:               "arlon",
 		Short:             "Run the Arlon program",
@@ -47,7 +57,7 @@ func main() {
 	}
 	// don't display usage upon error
 	command.SilenceUsage = true
-	command.AddCommand(controller.NewCommand())
+	command.AddCommand(controller.NewCommand(ctx))
 	command.AddCommand(list_clusters.NewCommand())
 	command.AddCommand(bundle.NewCommand())
 	command.AddCommand(profile.NewCommand())
@@ -68,4 +78,31 @@ func main() {
 	if err := command.Execute(); err != nil {
 		os.Exit(1)
 	}
+}
+
+func Context() (ctx context.Context, cancel func()) {
+	log.Println("Setting up cancellable context")
+
+	// trap Ctrl+C and call cancel on the context
+	ctx, origCancel := context.WithCancel(context.Background())
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT)
+
+	cancel = func() {
+		signal.Stop(signalChan)
+		origCancel()
+	}
+
+	// Cancel the context on a received signal.
+	go func() {
+		select {
+		case sig := <-signalChan:
+			log.Printf("cancellation signal received: %s\n", sig.String())
+			cancel()
+		case <-ctx.Done():
+			return
+		}
+	}()
+
+	return ctx, cancel
 }
