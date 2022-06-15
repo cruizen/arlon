@@ -10,7 +10,7 @@ theme:
 nav:
   - Home: index.md
   - Specimen: specimen.md
-  - Arlon_About: readme.md
+  - Arlon_About: about.md
   - Arlon_Help: help.md
   - Arlon_Design: design.md
 
