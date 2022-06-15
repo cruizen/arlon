@@ -6,7 +6,7 @@ theme: windmill
 #  name: 'rtd-dropdown'
 nav:
   - Home: index.md
-  - Readme: readme.md
+  - Readme: about.md
   - Arlon_Help: help.md
   - Arlon_Design: design.md
 
