@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 
-site_name: Arlon 
+site_name: cruizen_arlon_test 
 theme:
   name: material
   palette: 
@@ -18,5 +18,5 @@ theme:
 #  name: gitbook
 #  name: 'rtd-dropdown'
 #theme: ivory
-repo_url: https://github.com/arlonproj/arlon
-repo_name: arlonproj/arlon
+repo_url: https://github.com/cruizen/arlon
+repo_name: cruizen/arlon
