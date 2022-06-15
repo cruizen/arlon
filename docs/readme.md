@@ -1,5 +1,5 @@
 # About Arlon
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fplatform9%2Farlon.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fplatform9%2Farlon?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcruizen%2Farlon.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcruizen%2Farlon?ref=badge_shield)
 [![Go Report Card](https://goreportcard.com/badge/github.com/arlonproj/arlon)](https://goreportcard.com/report/github.com/arlonproj/arlon)
 [![Documentation Status](https://readthedocs.org/projects/arlon/badge/?version=latest)](https://arlon.readthedocs.io/en/latest/?badge=latest)
 
@@ -652,5 +652,5 @@ Here is a summary of the kinds of resources generated and deployed by the chart:
 - One ArgoCD Application resource for each bundle.
 
 
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fplatform9%2Farlon.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fplatform9%2Farlon?ref=badge_large)
+## License Vulnerability Scan Status
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcruizen%2Farlon.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcruizen%2Farlon?ref=badge_large)

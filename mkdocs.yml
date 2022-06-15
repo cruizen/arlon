@@ -10,6 +10,9 @@ theme:
 nav:
   - Home: index.md
   - Specimen: specimen.md
+  - Arlon_About: readme.md
+  - Arlon_Help: help.md
+  - Arlon_Design: design.md
 
 markdown_extensions:
   - admonition
