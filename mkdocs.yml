@@ -4,6 +4,10 @@ site_name: cruizen_arlon_test
 theme: windmill
 #  name: gitbook
 #  name: 'rtd-dropdown'
+nav:
+  - Home: readme.md
+  - Arlon_Help: help.md
+  - Arlon_Design: design.md
 #theme: ivory
 repo_url: https://github.com/cruizen/arlon
 repo_name: cruizen/arlon
