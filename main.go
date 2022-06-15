@@ -17,15 +17,19 @@ limitations under the License.
 package main
 
 import (
-	"arlon.io/arlon/cmd/bundle"
-	"arlon.io/arlon/cmd/cluster"
-	"arlon.io/arlon/cmd/clusterspec"
-	"arlon.io/arlon/cmd/controller"
-	"arlon.io/arlon/cmd/list_clusters"
-	"arlon.io/arlon/cmd/profile"
 	"flag"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
+
+	"github.com/arlonproj/arlon/cmd/bundle"
+	"github.com/arlonproj/arlon/cmd/callhomecontroller"
+	"github.com/arlonproj/arlon/cmd/cluster"
+	"github.com/arlonproj/arlon/cmd/clusterspec"
+	"github.com/arlonproj/arlon/cmd/controller"
+	"github.com/arlonproj/arlon/cmd/list_clusters"
+	"github.com/arlonproj/arlon/cmd/profile"
+
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -48,6 +52,7 @@ func main() {
 	// don't display usage upon error
 	command.SilenceUsage = true
 	command.AddCommand(controller.NewCommand())
+	command.AddCommand(callhomecontroller.NewCommand())
 	command.AddCommand(list_clusters.NewCommand())
 	command.AddCommand(bundle.NewCommand())
 	command.AddCommand(profile.NewCommand())

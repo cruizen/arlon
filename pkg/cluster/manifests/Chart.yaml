@@ -33,3 +33,6 @@ dependencies:
   - name: xplane-aws-eks
     tags:
       - xplane-aws-eks
+  - name: capi-cluster-autoscaler
+    tags:
+      - capi-cluster-autoscaler

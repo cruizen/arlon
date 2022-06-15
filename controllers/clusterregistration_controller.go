@@ -17,7 +17,6 @@ limitations under the License.
 package controllers
 
 import (
-	arlonv1 "arlon.io/arlon/api/v1"
 	"context"
 	"fmt"
 	cmdutil "github.com/argoproj/argo-cd/v2/cmd/util"
@@ -26,6 +25,7 @@ import (
 	clusterpkg "github.com/argoproj/argo-cd/v2/pkg/apiclient/cluster"
 	"github.com/argoproj/argo-cd/v2/util/clusterauth"
 	"github.com/argoproj/argo-cd/v2/util/io"
+	arlonv1 "github.com/arlonproj/arlon/api/v1"
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -48,9 +48,9 @@ type ClusterRegistrationReconciler struct {
 	ArgocdClient apiclient.Client
 }
 
-//+kubebuilder:rbac:groups=arlon.io,resources=clusterregistrations,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=arlon.io,resources=clusterregistrations/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=arlon.io,resources=clusterregistrations/finalizers,verbs=update
+//+kubebuilder:rbac:groups=core.arlon.io,resources=clusterregistrations,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core.arlon.io,resources=clusterregistrations/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=core.arlon.io,resources=clusterregistrations/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

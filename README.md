@@ -1,4 +1,7 @@
 # Arlon
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fplatform9%2Farlon.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fplatform9%2Farlon?ref=badge_shield)
+[![Go Report Card](https://goreportcard.com/badge/github.com/arlonproj/arlon)](https://goreportcard.com/report/github.com/arlonproj/arlon)
+[![Documentation Status](https://readthedocs.org/projects/arlon/badge/?version=latest)](https://arlon.readthedocs.io/en/latest/?badge=latest)
 
 Arlon is a lifecycle management and configuration tool for Kubernetes clusters.
 It allows an administrator to compose, deploy and configure a large number of
@@ -25,9 +28,12 @@ an RBAC ruleset, an add-on, an application, etc...
 
 # Architecture
 
+![architecture](./docs/architecture_diagram.png)
+
 Arlon is composed of a controller, a library, and a CLI that exposes the library's
 functions as commands. In the future, an API server may be built from
-the library as well. 
+the library as well. Arlon adds CRDs (custom resource definitions) for several
+custom resources such as ClusterRegistration and Profile.
 
 ## Management cluster
 The management cluster is a Kubernetes cluster hosting all the components
@@ -188,18 +194,22 @@ kind: ConfigMap
 [...]
 ```
 - Generate an account token: `argocd account generate-token --account arlon`
-- Make a temporary copy of the config file: `cp ${HOME}/.config/argocd/config /tmp/argocd_config` then
+- Make a temporary copy of the config file: `cp ${HOME}/.config/argocd/config /tmp/config` then
   edit it to replace the value of `auth-token` with the token from
   the previous step. Save changes. This file will be used to configure the Arlon
   controller's ArgoCD credentials during the next steps.
 
+NOTE: _On some operating systems, including Linux, it's possible the source configuration
+file is located at `${HOME}/.argocd/config` instead. In any case, ensure that
+the destination file is named `/tmp/config`, it's important for the secret creation step below_.
+
 ## Arlon controller
 - Create the arlon namespace: `kubectl create ns arlon`
 - Create the ArgoCD credentials secret from the temporary config file:
-  `kubectl -n arlon create secret generic argocd-creds --from-file /tmp/argocd_config`
+  `kubectl -n arlon create secret generic argocd-creds --from-file /tmp/config`
 - Delete the temporary config file
 - Clone the arlon git repo and cd to its top directory
-- Create the `clusterregistrations` CRD: `kubectl apply -f config/crd/bases/arlon.io_clusterregistrations.yaml`
+- Create the `clusterregistrations` CRD: `kubectl apply -f config/crd/bases/core.arlon.io_clusterregistrations.yaml`
 - Deploy the controller: `kubectl apply -f deploy/manifests/`
 - Ensure the controller eventually enters the Running state: `watch kubectl -n arlon get pod`
 
@@ -639,3 +649,7 @@ Here is a summary of the kinds of resources generated and deployed by the chart:
   of the expanded bundles. Every bundle referenced by the profile is
   copied/unpacked into its own subdirectory.
 - One ArgoCD Application resource for each bundle.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fplatform9%2Farlon.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fplatform9%2Farlon?ref=badge_large)

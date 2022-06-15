@@ -1,16 +1,16 @@
 package cluster
 
 import (
-	"arlon.io/arlon/pkg/argocd"
-	"arlon.io/arlon/pkg/cluster"
 	_ "embed"
 	"fmt"
 	"github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	"github.com/argoproj/argo-cd/v2/util/cli"
+	"github.com/arlonproj/arlon/pkg/argocd"
+	"github.com/arlonproj/arlon/pkg/cluster"
+	"github.com/arlonproj/arlon/pkg/profile"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
-	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"os"
 )
@@ -28,17 +28,46 @@ func updateClusterCommand() *cobra.Command {
 		Long:  "update existing cluster",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(c *cobra.Command, args []string) error {
-			conn, appIf := argocd.NewArgocdClientOrDie("").NewApplicationClientOrDie()
+			argoIf := argocd.NewArgocdClientOrDie("")
+			conn, appIf := argoIf.NewApplicationClientOrDie()
 			defer conn.Close()
 			config, err := clientConfig.ClientConfig()
 			if err != nil {
 				return fmt.Errorf("failed to get k8s client config: %s", err)
 			}
-			kubeClient := kubernetes.NewForConfigOrDie(config)
-			updateInArgoCd := !outputYaml
 			clusterName := args[0]
-			rootApp, err := cluster.Update(appIf, kubeClient, argocdNs, arlonNs,
-				clusterName, clusterSpecName, profileName, updateInArgoCd)
+			clust, err := cluster.Get(appIf, config, argocdNs, clusterName)
+			if err != nil {
+				return fmt.Errorf("failed to get clust: %s", err)
+			}
+			if clust.IsExternal {
+				if clusterSpecName != "" {
+					return fmt.Errorf("external cluster cannot accept a cluster spec")
+				}
+				if profileName == "" {
+					return fmt.Errorf("new profile not specified")
+				}
+				if profileName == clust.ProfileName {
+					return fmt.Errorf("profile is the same as existing one")
+				}
+				err = cluster.UnmanageExternal(argoIf, config, argocdNs, clusterName)
+				if err != nil {
+					return fmt.Errorf("failed to unmanage cluster: %s", err)
+				}
+				prof, err := profile.Get(config, profileName, arlonNs)
+				if err != nil {
+					return fmt.Errorf("failed to get profile: %s", err)
+				}
+				err = cluster.ManageExternal(argoIf, config, argocdNs, clusterName, prof)
+				if err != nil {
+					return fmt.Errorf("failed to manage cluster: %s", err)
+				}
+				return nil
+			}
+			updateInArgoCd := !outputYaml
+			rootApp, err := cluster.Update(appIf, config, argocdNs, arlonNs,
+				clusterName, clusterSpecName, profileName, updateInArgoCd,
+				config.Host)
 			if err != nil {
 				return fmt.Errorf("failed to update cluster: %s", err)
 			}
@@ -67,6 +96,5 @@ func updateClusterCommand() *cobra.Command {
 	command.Flags().StringVar(&profileName, "profile", "", "the configuration profile to use")
 	command.Flags().StringVar(&clusterSpecName, "cluster-spec", "", "the clusterspec to use")
 	command.Flags().BoolVar(&outputYaml, "output-yaml", false, "output root application YAML instead of updating ArgoCD root app")
-	command.MarkFlagRequired("cluster-name")
 	return command
 }

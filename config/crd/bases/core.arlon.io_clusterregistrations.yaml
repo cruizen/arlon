@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: clusterregistrations.arlon.io
+  name: clusterregistrations.core.arlon.io
 spec:
-  group: arlon.io
+  group: core.arlon.io
   names:
     kind: ClusterRegistration
     listKind: ClusterRegistrationList
@@ -38,8 +38,6 @@ spec:
             description: ClusterRegistrationSpec defines the desired state of ClusterRegistration
             properties:
               clusterName:
-                description: Foo is an example field of ClusterRegistration. Edit
-                  clusterregistration_types.go to remove/update
                 type: string
               kubeconfigSecretKeyName:
                 type: string

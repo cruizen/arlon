@@ -1,10 +1,10 @@
 package clusterspec
 
 import (
-	"arlon.io/arlon/pkg/clusterspec"
 	"context"
 	"fmt"
 	"github.com/argoproj/argo-cd/v2/util/cli"
+	"github.com/arlonproj/arlon/pkg/clusterspec"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -50,17 +50,18 @@ func listClusterspecs(config *restclient.Config, ns string) error {
 		return nil
 	}
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-	_, _ = fmt.Fprintf(w, "NAME\tAPIPROV\tCLOUDPROV\tTYPE\tKUBEVERSION\tNODETYPE\tNODECNT\tMSTNODECNT\tSSHKEY\tTAGS\tDESCRIPTION\n")
+	_, _ = fmt.Fprintf(w, "NAME\tAPIPROV\tCLOUDPROV\tTYPE\tKUBEVERSION\tNODETYPE\tNODECNT\tMSTNODECNT\tSSHKEY\tCAS\tCASMIN\tCASMAX\tTAGS\tDESCRIPTION\n")
 	for _, configMap := range configMaps.Items {
 		cs, err := clusterspec.FromConfigMap(&configMap)
 		if err != nil {
 			fmt.Fprintf(w, "%s\t(corrupt data)\n", configMap.Name)
 			continue
 		}
-		_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s\n",
+		_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%s\t%t\t%d\t%d\t%s\t%s\n",
 			cs.Name, cs.ApiProvider, cs.CloudProvider,
 			cs.Type, cs.KubernetesVersion, cs.NodeType, cs.NodeCount,
-			cs.MasterNodeCount, cs.SshKeyName,
+			cs.MasterNodeCount, cs.SshKeyName, cs.ClusterAutoscalerEnabled,
+			cs.ClusterAutoscalerMinNodes, cs.ClusterAutoscalerMaxNodes,
 			cs.Tags, cs.Description)
 	}
 	_ = w.Flush()
