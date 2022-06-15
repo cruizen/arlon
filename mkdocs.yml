@@ -3,7 +3,19 @@
 site_name: cruizen_arlon_test 
 theme:
   name: null
-  custom_dir: 'cinder'
+  custom_dir: cinder
+  colorscheme: github
+  highlightjs: true
+
+nav:
+  - Home: index.md
+  - Specimen: specimen.md
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+
 #  name: gitbook
 #  name: 'rtd-dropdown'
 #theme: ivory

@@ -26,3 +26,11 @@ testbin/*
 
 arlon
 
+mkdocs_cinder.egg-info/
+cinder-1.2.0/
+.vscode
+site/*
+cinder/__pycache__/*
+.DS_Store
+.venv
+v1.2.0.zip
