@@ -11,5 +11,6 @@ nav:
   - Arlon_Design: design.md
 
 #theme: ivory
+edit_uri: edit/main/docs/
 repo_url: https://github.com/cruizen/arlon
 repo_name: cruizen/arlon
