@@ -18,5 +18,6 @@ theme:
 #  name: gitbook
 #  name: 'rtd-dropdown'
 #theme: ivory
+edit_uri: edit/main/docs/
 repo_url: https://github.com/cruizen/arlon
 repo_name: cruizen/arlon
